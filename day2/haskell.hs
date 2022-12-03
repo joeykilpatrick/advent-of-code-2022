@@ -1,7 +1,7 @@
 data FirstChar = A | B | C
 data SecondChar = X | Y | Z
 
-data Move = Rock | Paper | Scissors deriving (Eq, Show) -- TODO Can remove Show
+data Move = Rock | Paper | Scissors deriving (Eq)
 data Result = Win | Draw | Lose
 
 data TheirMove = TheirMove Move
