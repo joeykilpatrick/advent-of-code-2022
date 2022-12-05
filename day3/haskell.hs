@@ -24,8 +24,7 @@ halve s = [take halfLength s, drop halfLength s]
 chunksOf :: Int -> [a] -> [[a]]
 chunksOf n xs
     | length xs > n   = (take n xs):(chunksOf n $ drop n xs)
-    | length xs == n  = [xs]
-    | otherwise       = []
+    | otherwise  = [xs]
 
 problem1Solution = sum $ map wordSetPriority $ map halve rucksacks
 problem2Solution = sum $ map wordSetPriority $ chunksOf 3 rucksacks
