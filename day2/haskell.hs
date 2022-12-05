@@ -59,7 +59,7 @@ rounds = [(C, Y), (C, Y), (B, Y), (A, Z), (B, Z), (A, X), (A, Y), (A, Y), (A, X)
 problem1ReadRound :: (FirstChar, SecondChar) -> (TheirMove, YourMove)
 problem1ReadRound (c1, c2) = (readFirstMove c1, readSecondMove c2)
 
-problem1Solution = foldr (+) 0 $ map (calculateRoundPoints . problem1ReadRound) rounds
+problem1Solution = sum $ map (calculateRoundPoints . problem1ReadRound) rounds
     where
         calculateRoundPoints :: (TheirMove, YourMove) -> Int
         calculateRoundPoints (theirs, yours) = roundPoints yours (play theirs yours)
@@ -67,7 +67,7 @@ problem1Solution = foldr (+) 0 $ map (calculateRoundPoints . problem1ReadRound) 
 problem2ReadRound :: (FirstChar, SecondChar) -> (TheirMove, Result)
 problem2ReadRound (c1, c2) = (readFirstMove c1, readRoundResult c2)
 
-problem2Solution = foldr (+) 0 $ map (calculateRoundPoints . problem2ReadRound) rounds
+problem2Solution = sum $ map (calculateRoundPoints . problem2ReadRound) rounds
      where
          calculateRoundPoints :: (TheirMove, Result) -> Int
          calculateRoundPoints (theirs, result) = roundPoints (getMoveForResult theirs result) result

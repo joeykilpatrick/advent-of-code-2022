@@ -1,6 +1,5 @@
 import Data.Char (ord)
 import Data.List (intersect)
-import Data.List.Split (chunksOf)
 
 priority :: Char -> Int
 priority c
@@ -22,9 +21,14 @@ halve :: String -> [String]
 halve s = [take halfLength s, drop halfLength s]
     where halfLength = length s `div` 2
 
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf n xs
+    | length xs > n   = (take n xs):(chunksOf n $ drop n xs)
+    | length xs == n  = [xs]
+    | otherwise       = []
 
-problem1Solution = foldr (+) 0 $ map wordSetPriority $ map halve rucksacks
-problem2Solution = foldr (+) 0 $ map wordSetPriority $ chunksOf 3 rucksacks
+problem1Solution = sum $ map wordSetPriority $ map halve rucksacks
+problem2Solution = sum $ map wordSetPriority $ chunksOf 3 rucksacks
 
 main :: IO ()
 main = do { putStrLn (show problem1Solution)
