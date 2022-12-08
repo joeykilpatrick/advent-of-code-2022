@@ -5,6 +5,7 @@
         "noImplicitAny": true,
         "noImplicitThis": true,
         "noUncheckedIndexedAccess": true,
-        "target": "ESNext"
+        "target": "ESNext",
+        "moduleResolution": "Node"
     }
 }
