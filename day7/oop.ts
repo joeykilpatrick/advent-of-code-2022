@@ -1,3 +1,44 @@
+class Shell {
+
+    private workingDirectory: Directory;
+
+    constructor(
+        initialDirectory: Directory
+    ) {
+        this.workingDirectory = initialDirectory;
+    }
+
+    readLine(line: string): void {
+        const cdCommand = /^\$ cd (.*)$/.exec(line);
+        if (cdCommand) {
+            const dirName: string = cdCommand[1]!; // Assertion guaranteed by regex
+            this.workingDirectory = this.workingDirectory.getSubdirectory(dirName);
+            return;
+        }
+
+        if (line === '$ ls') {
+            return;
+        }
+
+        const listedFile = /^(\d*) (.*)$/.exec(line);
+        if (listedFile) {
+            const [, size, filename] = listedFile as unknown as [unknown, `${number}`, string]; // Assertion guaranteed by regex
+            this.workingDirectory.addFile(filename, parseInt(size));
+            return;
+        }
+
+        const listedDir = /^dir (.*)$/.exec(line);
+        if (listedDir) {
+            const dirName: string = listedDir[1]!; // Assertion guaranteed by regex
+            this.workingDirectory.addSubdirectory(dirName);
+            return;
+        }
+
+        throw Error(`Did not understand format for line: "${line}"`);
+    }
+
+}
+
 class Directory {
 
     private subdirectories: Record<string, Directory> = {};
@@ -56,38 +97,8 @@ const shellTextLines: string[] = shellText.split('\n');
 
 const root: Directory = new Directory(null, '/');
 
-(() => {
-    let currentDirectory: Directory = root;
-    for (const line of shellTextLines) {
-
-        const cdCommand = /^\$ cd (.*)$/.exec(line);
-        if (cdCommand) {
-            const dirName: string = cdCommand[1]!; // Assertion guaranteed by regex
-            currentDirectory = currentDirectory.getSubdirectory(dirName);
-            continue;
-        }
-
-        if (line === '$ ls') {
-            continue;
-        }
-
-        const listedFile = /^(\d*) (.*)$/.exec(line);
-        if (listedFile) {
-            const [, size, filename] = listedFile as unknown as [unknown, `${number}`, string]; // Assertion guaranteed by regex
-            currentDirectory.addFile(filename, parseInt(size));
-            continue;
-        }
-
-        const listedDir = /^dir (.*)$/.exec(line);
-        if (listedDir) {
-            const dirName: string = listedDir[1]!; // Assertion guaranteed by regex
-            currentDirectory.addSubdirectory(dirName);
-            continue;
-        }
-
-        throw Error(`Did not understand format for line: "${line}"`);
-    }
-})()
+const shell = new Shell(root);
+shellTextLines.forEach((line) => shell.readLine(line));
 
 const allDirectories: Directory[] = (() => {
 
